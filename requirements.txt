@@ -1,0 +1,11 @@
+# --- Web Crawling ---
+httpx>=0.27.0
+beautifulsoup4>=4.12.0
+lxml>=5.1.0
+pandas>=2.2.0
+
+# --- Database (Supabase) & Utils ---
+supabase>=2.3.0
+python-dotenv>=1.0.1
+python-dateutil>=2.9.0
+psycopg2>=2.9.11
