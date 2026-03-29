@@ -7,9 +7,6 @@ CREATE TABLE news (
     published_at    TIMESTAMP,
     crawled_at      TIMESTAMP DEFAULT NOW(),
     summary         TEXT,
-    sentiment       VARCHAR(20),
-    sentiment_score DECIMAL(3,2),
-    sentiment_reason TEXT,
     themes          JSONB,
     is_processed    BOOLEAN DEFAULT FALSE
 );
@@ -18,8 +15,6 @@ CREATE INDEX idx_news_published
   ON news(published_at DESC);
 CREATE INDEX idx_news_themes
   ON news USING GIN(themes);
-CREATE INDEX idx_news_sentiment
-  ON news(sentiment);
 CREATE INDEX idx_news_processed
   ON news(is_processed);
 
