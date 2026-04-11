@@ -26,3 +26,5 @@ Thumbs.db
 test/
 output.txt
 reproduce_error.py
+
+PROJECT.md
