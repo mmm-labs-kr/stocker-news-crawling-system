@@ -84,7 +84,9 @@ def run_crawler() -> pd.DataFrame:
     전체 크롤링 프로세스(RSS 수집 -> 비동기 본문 추출)를 실행합니다.
     """
     rss_targets = [
-        {"source": "한국경제", "url": "https://www.hankyung.com/feed/economy"}
+        {"source": "한국경제", "url": "https://www.hankyung.com/feed/economy"},
+        {"source": "매일경제", "url": "https://www.mk.co.kr/rss/30100041/"},
+        {"source": "조선비즈", "url": "https://www.chosun.com/arc/outboundfeeds/rss/category/economy/?outputType=xml"},
     ]
 
     all_news = []

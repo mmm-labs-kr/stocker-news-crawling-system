@@ -28,3 +28,6 @@ output.txt
 reproduce_error.py
 
 PROJECT.md
+CLAUDE.md
+HANDOFF.md
+.claude/
