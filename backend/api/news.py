@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 
-from api.deps import get_db
+from .deps import get_db
 
 router = APIRouter(tags=["News"])
 
@@ -41,7 +41,7 @@ def get_news_detail(news_id: int):
     try:
         with get_db() as (_, cur):
             cur.execute(
-                "SELECT id, title, summary, themes, url FROM news WHERE id = %s AND is_processed = TRUE",
+                "SELECT id, title, summary, themes, url, source, published_at FROM news WHERE id = %s AND is_processed = TRUE",
                 (news_id,),
             )
             news = cur.fetchone()

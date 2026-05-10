@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.news import router as news_router
-from api.user import router as user_router
+from .api.news import router as news_router
+from .api.user import router as user_router
 
 app = FastAPI(
     title="Stocker API",

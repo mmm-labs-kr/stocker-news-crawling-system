@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Depends, Header, Query
 from pydantic import BaseModel
 from typing import Optional
 
-from api.deps import get_db
+from .deps import get_db
 
 router = APIRouter(tags=["User & Personalization"])
 
