@@ -7,7 +7,6 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
-    # .env 파일의 키들을 Airflow 컨테이너에 전달
     DB_HOST: ${DB_HOST}
     DB_PORT: ${DB_PORT}
     DB_NAME: ${DB_NAME}
@@ -16,7 +15,6 @@ x-airflow-common: &airflow-common
     SUPABASE_URL: ${SUPABASE_URL}
     SUPABASE_KEY: ${SUPABASE_KEY}
     GEMINI_API_KEY: ${GEMINI_API_KEY}
-    # Python 경로 추가 (pipeline 폴더 인식용)
     PYTHONPATH: /opt/airflow
   volumes:
     - ./dags:/opt/airflow/dags
@@ -27,15 +25,24 @@ x-airflow-common: &airflow-common
       condition: service_healthy
 
 services:
-  # ── Airflow 메타데이터 DB (Supabase와 별개) ──
+  # ── Backend API ──
+  backend:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: always
+
+  # ── Airflow 메타데이터 DB ──
   airflow-db:
     image: postgres:15
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
-    ports:
-      - "5433:5432"    # 외부 포트 5433으로 충돌 방지
     volumes:
       - airflow-db-data:/var/lib/postgresql/data
     healthcheck:
@@ -43,7 +50,7 @@ services:
       interval: 10s
       retries: 5
 
-  # ── 초기화 (1회만 실행) ──
+  # ── 초기화 (최초 1회만 실행) ──
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash
@@ -58,7 +65,6 @@ services:
           --lastname User \
           --role Admin \
           --email admin@stocker.local
-        echo "✅ Airflow 초기화 완료"
     restart: "no"
 
   # ── 웹서버 (모니터링 UI) ──
@@ -74,15 +80,10 @@ services:
       retries: 5
     restart: always
 
-  # ── 스케줄러 (DAG 실행) ──
+  # ── 스케줄러 ──
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
-    healthcheck:
-      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname $(hostname)"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     restart: always
 
 volumes:
